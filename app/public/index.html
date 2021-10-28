@@ -1,0 +1,369 @@
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Who's the Murderer?</title>
+    <meta name="description" content="Who's the Murderer MVP">
+    
+    <!----------------------------------------------------------------------------------------->
+
+    <script src="https://aframe.io/releases/1.1.0/aframe.min.js"></script>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.4.5/socket.io.min.js"></script>
+    <script src="easyrtc/easyrtc.js"></script>
+    <script src="https://unpkg.com/networked-aframe@^0.6.0/dist/networked-aframe.min.js"></script>
+
+    <script src="https://unpkg.com/aframe-randomizer-components@^3.0.1/dist/aframe-randomizer-components.min.js"></script>
+    <script src="https://unpkg.com/aframe-particle-system-component@1.0.5/dist/aframe-particle-system-component.min.js"></script>
+    <script src="/js/spawn-in-circle.component.js"></script>
+    
+    <!-- AFRAME -->
+    <script src="https://cdn.rawgit.com/donmccurdy/aframe-extras/v6.1.1/dist/aframe-extras.min.js"></script>
+    <!-- physics -->
+    <script src="https://cdn.jsdelivr.net/gh/n5ro/aframe-physics-system@v4.0.1/dist/aframe-physics-system.min.js"></script>
+    <script src="https://unpkg.com/aframe-physics-extras/dist/aframe-physics-extras.min.js"></script>
+    <!-- super hand -->
+    <script src="https://unpkg.com/super-hands/dist/super-hands.min.js"></script>
+    <!-- event-set -->
+    <script src="https://unpkg.com/aframe-event-set-component@5.0.0/dist/aframe-event-set-component.min.js"></script>
+    <!-- vibration -->
+    <script src="https://unpkg.com/aframe-haptics-component/dist/aframe-haptics-component.min.js"></script>
+    
+    <!-- Croquet -->
+    <script src="https://unpkg.com/@croquet/croquet"></script>
+    
+    
+    
+    <script src="/js/define-collider.js"></script>
+    <script src="/js/data.js"></script>
+    <script src="/js/util.js"></script>
+    <script src="/js/scripts.js"></script>
+    <script src="/js/inventory.js"></script>
+    <script src="/js/user-input.js"></script>
+    <script src="/js/manipulate-states.js"></script>
+    <script src="/js/sync-items.js"></script>
+    
+  </head>
+  <body>
+    <a-scene networked-scene="room: audio; adapter: easyrtc; audio: true; debug: true" physics="friction: 0.1; debug: false">
+      <a-assets>
+    
+    <!---------------------------     item models     ------------------------------------>
+        <a-asset-item id="house-model" src="https://cdn.glitch.com/0332cfd8-bca8-4a8e-b646-014ec7eecb17%2Fmodel.gltf?v=1619755023676"></a-asset-item>
+        
+        <!-- meeting room -->
+        <a-asset-id id="meetingSofa1" src="https://raw.githubusercontent.com/MoSummers-dy/CSE481-3dModels/main/assets/meetingRoom/sofa/scene.gltf"></a-asset-id>
+        <a-aseet-id id="meetingCoffeetable1" src="https://raw.githubusercontent.com/MoSummers-dy/CSE481-3dModels/main/assets/meetingRoom/coffeeTable/scene.gltf"></a-aseet-id>
+        <a-asset-id id="meetingRug1" src="https://raw.githubusercontent.com/MoSummers-dy/CSE481-3dModels/main/assets/meetingRoom/rug/scene.gltf"></a-asset-id>
+        
+        <a-asset-id id="meetingBookshelf1" src="https://raw.githubusercontent.com/MoSummers-dy/CSE481-3dModels/main/assets/meetingRoom/bookShelf/scene.gltf"></a-asset-id>
+        <a-asset-id id="meetingLibraryshelf1" src="https://raw.githubusercontent.com/MoSummers-dy/CSE481-3dModels/main/assets/meetingRoom/libraryShelf/scene.gltf"></a-asset-id>
+        <a-asset-id id="mettingTwistshelf1" src="https://raw.githubusercontent.com/MoSummers-dy/CSE481-3dModels/main/assets/meetingRoom/twistShelf/scene.gltf"></a-asset-id>
+        
+        <a-asset-id id="meetingPlant1" src="https://raw.githubusercontent.com/MoSummers-dy/CSE481-3dModels/main/assets/meetingRoom/tallPlant/scene.gltf"></a-asset-id>
+
+        <!-- lucas room -->
+        <a-asset-id id="lucasSink1" src="https://raw.githubusercontent.com/MoSummers-dy/CSE481-3dModels/main/assets/lucasRoom/sink/scene.gltf"></a-asset-id>
+        <a-asset-id id="lucasBathtub1" src="https://raw.githubusercontent.com/MoSummers-dy/CSE481-3dModels/main/assets/lucasRoom/bathtub/scene.gltf"></a-asset-id>
+        <a-asset-id id="lucasHamper1" src="https://raw.githubusercontent.com/MoSummers-dy/CSE481-3dModels/main/assets/lucasRoom/hamper/scene.gltf"></a-asset-id>
+        <a-asset-id id="lucasMirror1" src="https://raw.githubusercontent.com/MoSummers-dy/CSE481-3dModels/main/assets/lucasRoom/mirror/scene.gltf"></a-asset-id>
+        <a-asset-id id="lucasDoll1" src="https://raw.githubusercontent.com/MoSummers-dy/CSE481-3dModels/main/assets/lucasRoom/doll/scene.gltf"></a-asset-id>
+        <a-asset-id id="lucasKey1" src="https://raw.githubusercontent.com/MoSummers-dy/CSE481-3dModels/main/assets/lucasRoom/key/scene.gltf"></a-asset-id>
+        
+        <a-asset-id id="lucasBed1" src="https://raw.githubusercontent.com/MoSummers-dy/CSE481-3dModels/main/assets/lucasRoom/bed/scene.gltf"></a-asset-id>
+        <a-asset-id id="lucasSkeleton1" src="https://raw.githubusercontent.com/MoSummers-dy/CSE481-3dModels/main/assets/lucasRoom/skeleton/scene.gltf"></a-asset-id>
+        <a-asset-id id="lucasTable1" src="https://raw.githubusercontent.com/MoSummers-dy/CSE481-3dModels/main/assets/lucasRoom/table/scene.gltf"></a-asset-id>
+        <a-asset-id id="lucasLamp1" src="https://raw.githubusercontent.com/MoSummers-dy/CSE481-3dModels/main/assets/lucasRoom/lamp/scene.gltf"></a-asset-id>
+        <a-asset-id id="lucasPillow1" src="https://raw.githubusercontent.com/MoSummers-dy/CSE481-3dModels/main/assets/lucasRoom/pillow/scene.gltf"></a-asset-id>
+        <a-asset-id id="lucasPhone1" src="https://raw.githubusercontent.com/MoSummers-dy/CSE481-3dModels/main/assets/lucasRoom/phone/scene.gltf"></a-asset-id>
+        <a-aseet-id id="lucasNote1" src="https://raw.githubusercontent.com/MoSummers-dy/CSE481-3dModels/main/assets/lucasRoom/notebook/scene.gltf"></a-aseet-id>
+        <a-asset-id id="lucasBox1" src="https://raw.githubusercontent.com/MoSummers-dy/CSE481-3dModels/main/assets/lucasRoom/box/scene.gltf"></a-asset-id>
+
+        
+        <a-asset-id id="lucasSet1" src="https://raw.githubusercontent.com/MoSummers-dy/CSE481-3dModels/main/assets/lucasRoom/set/scene.gltf"></a-asset-id>
+        <a-asset-id id="lucasBag1" src="https://raw.githubusercontent.com/MoSummers-dy/CSE481-3dModels/main/assets/lucasRoom/bag/scene.gltf"></a-asset-id>
+        <a-asset-id id="lucasNote3" src="https://raw.githubusercontent.com/MoSummers-dy/CSE481-3dModels/main/assets/lucasRoom/notebook3/scene.gltf"></a-asset-id>
+        
+        <a-asset-id id="lucasDesk1" src="https://raw.githubusercontent.com/MoSummers-dy/CSE481-3dModels/main/assets/lucasRoom/desk/scene.gltf"></a-asset-id>
+        <a-asset-id id="lucasChair1" src="https://raw.githubusercontent.com/MoSummers-dy/CSE481-3dModels/main/assets/lucasRoom/chair/scene.gltf"></a-asset-id>
+        <a-asset-id id="lucasLaptop1" src="https://raw.githubusercontent.com/MoSummers-dy/CSE481-3dModels/main/assets/lucasRoom/laptop/scene.gltf"></a-asset-id>
+        <a-asset-id id="lucasNote2" src="https://raw.githubusercontent.com/MoSummers-dy/CSE481-3dModels/main/assets/lucasRoom/notebook2/scene.gltf"></a-asset-id>
+        <a-asset-id id="lucasBook2" src="https://raw.githubusercontent.com/MoSummers-dy/CSE481-3dModels/main/assets/lucasRoom/bookStack2/scene.gltf"></a-asset-id>
+        
+        <a-asset-id id="lucasShelf1" src="https://raw.githubusercontent.com/MoSummers-dy/CSE481-3dModels/main/assets/lucasRoom/shelf/scene.gltf"></a-asset-id>
+        <a-asset-id id="lucasCat1" src="https://raw.githubusercontent.com/MoSummers-dy/CSE481-3dModels/main/assets/lucasRoom/cat/scene.gltf"></a-asset-id>
+        
+        <a-asset-id id="lucasRug1" src="https://raw.githubusercontent.com/MoSummers-dy/CSE481-3dModels/main/assets/lucasRoom/rug/scene.gltf"></a-asset-id>
+        <a-asset-id id="lucasMonalisa1" src="https://raw.githubusercontent.com/MoSummers-dy/CSE481-3dModels/main/assets/lucasRoom/monalisa/scene.gltf"></a-asset-id>
+        <a-asset-id id="lucasPlant1" src="https://raw.githubusercontent.com/MoSummers-dy/CSE481-3dModels/main/assets/lucasRoom/plant/scene.gltf"></a-asset-id>
+        
+    <!---------------------------------    audio + figure   -------------------------------------->    
+        
+        <img id="grid" src="https://img.gs/bbdkhfbzkk/stretch/https://i.imgur.com/25P1geh.png" crossorigin="anonymous">
+        <img id="sky" src="https://img.gs/bbdkhfbzkk/2048x2048,stretch/http://i.imgur.com/WqlqEkq.jpg" crossorigin="anonymous" />
+
+        <!-- Templates -->
+
+        <!-- Avatar -->
+        <template id="avatar-template">
+          <a-entity class="avatar" networked-audio-source>
+            <a-sphere class="head"
+              color="#5985ff"
+              scale="0.45 0.5 0.4"
+              random-color
+            ></a-sphere>
+            <a-entity class="face"
+              position="0 0.05 0"
+            >
+              <a-sphere class="eye"
+                color="#efefef"
+                position="0.16 0.1 -0.35"
+                scale="0.12 0.12 0.12"
+              >
+                <a-sphere class="pupil"
+                  color="#000"
+                  position="0 0 -1"
+                  scale="0.2 0.2 0.2"
+                ></a-sphere>
+              </a-sphere>
+              <a-sphere class="eye"
+                color="#efefef"
+                position="-0.16 0.1 -0.35"
+                scale="0.12 0.12 0.12"
+              >
+                <a-sphere class="pupil"
+                  color="#000"
+                  position="0 0 -1"
+                  scale="0.2 0.2 0.2"
+                ></a-sphere>
+              </a-sphere>
+            </a-entity>
+          </a-entity>
+        </template>
+
+        <!-- /Templates -->
+        
+    <!---------------------------------    mixin   -------------------------------------->
+        <a-mixin id="decorative" static-body></a-mixin>
+
+        <a-mixin
+          id="interactable"
+          hoverable
+          event-set__hoveron="_event: hover-start; material.opacity: 0.7; transparent: true"
+          event-set__hoveroff="_event: hover-end; material.opacity: 1; transparent: false"
+        ></a-mixin>
+
+        <a-mixin
+          id="movable"
+          dynamic-body
+          grabbable="maxGrabbers: 1"
+          draggable
+          manipulate-grabbing-state
+          interact-with-inventory
+        ></a-mixin>
+
+        <a-mixin
+          id="stationary"
+          static-body
+          clickable
+          show-script
+          add-showing-script-state
+        ></a-mixin>
+
+        <a-mixin
+          id="scriptPanelConfig"
+          geometry="primitive: plane; width: 0.5; height: 0.65"
+          material="color: black; opacity: 0.75; side: double"
+          text="shader: msdf; color: white; align: left; value: null"
+          visible="false"
+        ></a-mixin>
+
+        <a-mixin
+          id="inventoryConfig"
+          geometry="primitive: box"
+          material="color: cyan; transparent: true; side: double"
+          collision-filter="collisionForces: false"
+          visible="false"
+        ></a-mixin>
+
+        <a-mixin
+          id="controller"
+          super-hands="colliderEvent: collisions;
+                              colliderEventProperty: els;
+                              colliderEndEvent: collisions;
+                              colliderEndEventProperty: clearedEls;
+                       grabStartButtons: triggerdown, gripdown;
+                       grabEndButtons: triggerup, gripup;
+                       dragDropStartButtons: triggerdown, gripdown;
+                       dragDropEndButtons: triggerup, gripup"
+          collision-filter="collisionForces: false"
+          physics-collider
+          static-body="shape: sphere; sphereRadius: 0.02"
+          hand-controls="handModelStyle: highPoly"
+        ></a-mixin>
+        
+      </a-assets>
+
+      <!----------------------------------------------------------------------------------------->    
+      <a-entity gltf-model="#house-model" scale="0.5 0.5 0.5" id="house" class="decorative" mixin="decorative" define-collider></a-entity>
+
+      <!-- meeting room -->
+      <a-entity position="-2.7 0.6 -10" rotation="0 180 0" scale="0.5 0.5 0.5">
+        <!-- sofa set -->
+        <a-entity position="2.5 0 -2">
+          <a-entity position="-2 -1 -4.5" gltf-model="#meetingSofa1" id="meetingSofa" rotation="0 90 0" scale="0.03 0.03 0.03" class="decorative" mixin="decorative" define-collider></a-entity>
+          <a-entity position="-0.5 -0.95 -3.5d" gltf-model="#meetingCoffeetable1" id="meetingCoffeetable" scale="0.0025 0.0015 0.0025" class="decorative" mixin="decorative" define-collider></a-entity>
+          <a-entity position="0 -1 -3" gltf-model="#meetingRug1" rotation="0 -90 0"></a-entity>
+        </a-entity>
+        
+        <!-- shelves -->
+        <a-entity>
+          <a-entity position="-8.5 -1 -8" gltf-model="#meetingLibraryshelf1" id="meetingLibraryshelf" scale="0.015 0.015 0.015" rotation="0 90 0" class="decorative" mixin="decorative" define-collider></a-entity>
+          <a-entity position="11 -1 -3" gltf-model="#mettingTwistshelf1" id="mettingTwistshelf" scale="0.02 0.02 0.02" class="decorative" mixin="decorative" define-collider></a-entity>
+          <a-entity position="7 0.6 -8" gltf-model="#meetingBookshelf1" id="meetingBookshelf" scale="0.1 0.1 0.1" class="decorative" mixin="decorative" define-collider></a-entity>
+        </a-entity>
+        
+        <!-- other decorations -->
+        <a-entity>
+          <a-entity position="11 -1.25 -6" gltf-model="#meetingPlant1" id="meetingPlant" scale="0.15 0.15 0.15" class="decorative" mixin="decorative" define-collider></a-entity>
+        </a-entity>
+      </a-entity>
+      
+      <!-- Lucas room -->
+      <a-entity position="5 0.15 5" rotation="0 180 0" scale="0.25 0.25 0.25">
+        <!-- washroom set -->
+        <a-entity position="-8 0 -8">
+          <a-entity position="2 -0.2 -5.5" gltf-model="#lucasSink1" id="lucasSink" scale="0.006 0.006 0.006" rotation="0 270 0" class="decorative" mixin="decorative" define-collider></a-entity>
+          <a-entity position="-2 0 1" gltf-model="#lucasBathtub1" id="lucasBathtub" scale="0.7 0.7 0.7" rotation="0 90 0" class="decorative" mixin="decorative" define-collider></a-entity>
+          <a-entity position="4.5 0 -5" gltf-model="#lucasHamper1" id="lucasHamper" scale="1 0.6 1" class="decorative" mixin="decorative" define-collider></a-entity>
+          <a-entity position="2 5.5 -6" gltf-model="#lucasMirror1" id="lucasMirror" scale="2 3 2" rotation="0 270 0" class="decorative" mixin="decorative" define-collider></a-entity>
+          <a-entity position="-2 1 1" gltf-model="#lucasDoll1" id="lucasDoll" scale="0.1 0.1 0.1" rotation="0 0 0" class="interactable movable" mixin="interactable movable" define-collider></a-entity>
+          <a-entity position="4.5 0.7 -5" gltf-model="#lucasKey1" id="lucasKey" scale="1 1 1" rotation="0 0 0" class="interactable movable" mixin="interactable movable" define-collider></a-entity>
+        </a-entity>
+        
+        <!-- bed set-->
+        <a-entity position="4 0 7.25">
+          <a-entity position="0 -0.4 0" gltf-model="#lucasBed1" id="lucasBed" scale="0.04 0.04 0.04" rotation="0 0 0" class="decorative" mixin="decorative" define-collider></a-entity>
+          <a-entity position="7 3.5 2.5" gltf-model="#lucasSkeleton1" id="lucasSkeleton" scale="1.5 1.5 1.5" rotation="0 270 0" class="decorative" mixin="decorative" define-collider></a-entity>
+          <!-- pilows -->
+          <a-entity>
+            <a-entity position="-3 1.5 2.3" gltf-model="#lucasPhone1" id="lucasPhoneOne" scale="0.004 0.004 0.004" rotation="0 0 180" class="interactable movable" mixin="interactable movable" define-collider></a-entity>
+          </a-entity>
+          <!-- bedside table -->
+          <a-entity position="5 0 0">
+            <a-entity position="0 0 2.5" gltf-model="#lucasTable1" id="lucasTableOne" scale="0.1 0.1 0.1" rotation="0 0 0" class="decorative" mixin="decorative" define-collider></a-entity>
+            <a-entity position="0 0.2 2.9" gltf-model="#lucasNote1" id="lucasNoteOne" scale="0.005 0.005 0.005" rotation="0 90 0" class="interactable movable" mixin="interactable movable" define-collider></a-entity>
+            <a-entity position="0.2 2.5 3" gltf-model="#lucasLamp1" id="lucasLamp" scale="2 2 2" rotation="0 0 0" class="decorative" mixin="decorative" define-collider></a-entity>
+            <a-entity position="-0.2 0.4 2" gltf-model="#lucasBook2" id="lucasBookTwo" scale="0.2 0.2 0.2" rotation="0 180 0" class="interactable movable" mixin="interactable movable" define-collider></a-entity>
+            <a-entity position="0 2 2.4" gltf-model="#lucasBox1" id="lucasBoxOne" scale="0.3 0.2 0.3" rotation="0 90 0" class="interactable movable" mixin="interactable movable" define-collider></a-entity>
+          </a-entity>
+        </a-entity>
+        
+        <!-- sofa set-->
+        <a-entity position="-7 0 8.75">
+          <a-entity position="0 0 0" gltf-model="#lucasSet1" id="lucasSet" scale="0.5 0.5 0.5" rotation="0 180 0" class="decorative" mixin="decorative" define-collider></a-entity>
+          <a-entity position="-1.8 2.5 -0.5" gltf-model="#lucasBag1" id="lucasBag" scale="0.7 0.7 0.7" rotation="0 180 0" class="interactable movable" mixin="interactable movable" define-collider></a-entity> 
+          <a-entity position="-2.5 2 0.8" gltf-model="#lucasNote3" id="lucasNoteThree" scale="0.001 0.001 0.001" rotation="0 90 180" class="interactable movable" mixin="interactable movable" define-collider></a-entity>
+          <a-entity position="1.5 2 -3" gltf-model="#lucasPhone1" id="lucasPhoneTwo" scale="0.004 0.004 0.004" rotation="0 90 180" class="interactable movable" mixin="interactable movable" define-collider></a-entity>
+        </a-entity>
+        
+        <!-- desk and chair -->
+        <a-entity position="5 0 -12.5">
+          <a-entity position="0 2.5 0" gltf-model="#lucasDesk1" id="lucasDesk" class="decorative" mixin="decorative" define-collider></a-entity>    
+          <a-entity position="1 0 2.5" gltf-model="#lucasChair1" id="lucasChair" scale="3.5 3.5 3.5" class="decorative" mixin="decorative" define-collider></a-entity>
+          <a-entity position="0 2.6 0" gltf-model="#lucasLaptop1" id="lucasLaptop" scale="0.4 0.4 0.4" rotation="0 -90 0" class="interactable movable" mixin="interactable movable" define-collider></a-entity>
+          <a-entity position="1.8 2.5 0" gltf-model="#lucasNote2" id="lucasNoteTwo" scale="1.6 1.6 1.6" class="interactable movable" mixin="interactable movable" define-collider></a-entity>
+          <a-entity position="-1.6 2.5 0" gltf-model="#lucasBook2" id="lucasBookOne" scale="0.25 0.25 0.25" rotation="0 -60 0" class="interactable movable" mixin="interactable movable" define-collider></a-entity>
+        </a-entity>
+        
+        <!-- shelf -->
+        <a-entity position="0 0 0">
+          <a-entity position="-45 -2 -65" gltf-model="#lucasShelf1" id="lucasShelf" scale="1 1 1" class="decorative" mixin="decorative" define-collider></a-entity>
+          <a-entity position="0 4.2 -12.5" gltf-model="#lucasCat1" id="lucasCat" scale="1.3 1.3 1.3" rotation="0 -90 0" class="interactable stationary" mixin="interactable stationary" define-collider></a-entity>
+        </a-entity>
+        
+        <!-- other decorations -->
+        <a-entity position="0 0 0">
+          <a-entity position="4 0 -4.5" gltf-model="#lucasRug1" id="lucasRug" scale="0.8 0.8 0.7" class="decorative" mixin="decorative" define-collider></a-entity>
+          <a-entity position="-12.75 2 7" gltf-model="#lucasMonalisa1" id="lucasMonalisa" scale="0.07 0.07 0.07" rotation="0 90 0" class="interactable stationary" mixin="interactable stationary" define-collider></a-entity>
+          <a-entity position="9 0 -12" gltf-model="#lucasPlant1" id="lucasPlant" scale="1.2 1.2 1.2" class="decorative" mixin="decorative" define-collider></a-entity>
+        </a-entity>
+      </a-entity>
+      
+      <!----------------------------------------------------------------------------------------->
+      <!-- script panel -->
+      <a-entity id="scriptPanel" mixin="scriptPanelConfig"></a-entity>
+      
+
+      
+      <a-entity id="virtual-cam" networked="template:#avatar-template;attachTemplateToLocal:false;" sync-with-cam spawn-in-circle="radius:3;">
+      
+        <a-sphere class="head"
+          visible="false"
+          random-color
+        ></a-sphere>
+      </a-entity>
+      
+       
+      
+      <a-entity id="rig" movement-controls="speed: 0.1" controller-input>
+        <!-- camera -->
+        <a-entity
+          camera
+          id="player"
+          look-controls
+          wasd-controls
+          position="0 1 0"
+        ></a-entity>
+
+        <!-- inventory -->
+        <a-entity id="inventory" mixin="inventoryConfig"></a-entity>
+
+        <!-- right controller -->
+        <a-entity
+          id="rightHand"
+          mixin="controller"
+          hand-controls="hand: right"
+        ></a-entity>
+
+        <!-- left controller -->
+        <a-entity
+          id="leftHand"
+          mixin="controller"
+          hand-controls="hand: left"
+        ></a-entity>
+      </a-entity>
+
+      <a-entity position="0 0 0"
+        geometry="primitive: plane; width: 10000; height: 10000;" rotation="-90 0 0"
+        material="src: #grid; repeat: 10000 10000; transparent: true; metalness:0.6; roughness: 0.4; sphericalEnvMap: #sky;"></a-entity>
+      
+
+      <a-sky src="#sky" rotation="0 -90 0"></a-sky>
+      <a-entity id="particles" particle-system="preset: snow"></a-entity>
+    </a-scene>
+
+    <script>
+      // On mobile remove elements that are resource heavy
+      var isMobile = AFRAME.utils.device.isMobile();
+
+      if (isMobile) {
+        var particles = document.getElementById('particles');
+        particles.parentNode.removeChild(particles);
+      }
+      
+      // Define custom schema for syncing avatar color, set by random-color
+      NAF.schemas.add({
+        template: '#avatar-template',
+        components: [
+          'position',
+          'rotation',
+          {
+            selector: '.head',
+            component: 'material',
+            property: 'color'
+          }
+        ]
+      });
+    </script>
+  </body>
+</html>
